@@ -1,0 +1,43 @@
+---
+title: "Crime in Mexico"
+output: html_document
+date: "2024-10-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Crime Data Analysis in Mexico
+This report analyzes crime data in Mexico, providing an overview of the types of crimes and their distribution across time and regions.
+
+### Loading and Preparing Data
+The following code loads the dataset and ensures correct encoding for special characters in Spanish.
+
+
+```{r}
+library(readr)
+library(tidyverse)
+library(dplyr)
+
+# Load data with correct encoding
+data_load <- read_csv("CrimeData.csv", locale = locale(encoding = "latin1"), show_col_types = FALSE)
+data_load[] <- lapply(data_load, function(x) if (is.character(x)) enc2utf8(x) else x)
+
+head(data_load)
+```
+
+### Transforming Data to Long Format
+We pivot the data to long format to analyze the monthly crime cases more effectively.
+
+
+```{r}
+
+# Convert the data to long format
+data <- data_load %>%
+  pivot_longer(cols = c("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"),
+               names_to = "Month", values_to = "Cases")
+head(data)
+
+```
