@@ -41,13 +41,13 @@ data <- data_load %>%
                names_to = "Month", values_to = "Cases")
 
 # Drop unnecessary columns and group by crime type
-data <- data %>%
+data_new <- data %>%
   select(-`Bien jurídico afectado`, -`Clave_Ent`, -`Modalidad`) %>%
   group_by(Año, Month, Entidad, `Tipo de delito`) %>%
   summarise(Cases = sum(Cases, na.rm = TRUE), .groups = "drop")
 
 # Display the first few rows to verify
-head(data)
+head(data_new)
 
 
 ```
