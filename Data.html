@@ -407,13 +407,13 @@ data &lt;- data_load %&gt;%
                names_to = &quot;Month&quot;, values_to = &quot;Cases&quot;)
 
 # Drop unnecessary columns and group by crime type
-data &lt;- data %&gt;%
+data_new &lt;- data %&gt;%
   select(-`Bien jurídico afectado`, -`Clave_Ent`, -`Modalidad`) %&gt;%
   group_by(Año, Month, Entidad, `Tipo de delito`) %&gt;%
   summarise(Cases = sum(Cases, na.rm = TRUE), .groups = &quot;drop&quot;)
 
 # Display the first few rows to verify
-head(data)</code></pre>
+head(data_new)</code></pre>
 <pre><code>## # A tibble: 6 × 5
 ##     Año Month Entidad        `Tipo de delito`       Cases
 ##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt;                  &lt;dbl&gt;
