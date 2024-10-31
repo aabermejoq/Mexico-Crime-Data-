@@ -20,6 +20,7 @@ library(readr)
 library(tidyverse)
 library(dplyr)
 
+
 # Load data with correct encoding
 data_load <- read_csv("CrimeData.csv", locale = locale(encoding = "latin1"), show_col_types = FALSE)
 data_load[] <- lapply(data_load, function(x) if (is.character(x)) enc2utf8(x) else x)
@@ -38,6 +39,15 @@ data <- data_load %>%
   pivot_longer(cols = c("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"),
                names_to = "Month", values_to = "Cases")
+
+# Drop unnecessary columns and group by crime type
+data <- data %>%
+  select(-`Bien jurídico afectado`, -`Clave_Ent`, -`Modalidad`) %>%
+  group_by(Año, Month, Entidad, `Tipo de delito`) %>%
+  summarise(Cases = sum(Cases, na.rm = TRUE), .groups = "drop")
+
+# Display the first few rows to verify
 head(data)
+
 
 ```

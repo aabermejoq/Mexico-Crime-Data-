@@ -376,6 +376,7 @@ library(tidyverse)</code></pre>
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <pre class="r"><code>library(dplyr)
 
+
 # Load data with correct encoding
 data_load &lt;- read_csv(&quot;CrimeData.csv&quot;, locale = locale(encoding = &quot;latin1&quot;), show_col_types = FALSE)
 data_load[] &lt;- lapply(data_load, function(x) if (is.character(x)) enc2utf8(x) else x)
@@ -404,18 +405,24 @@ data &lt;- data_load %&gt;%
   pivot_longer(cols = c(&quot;Enero&quot;, &quot;Febrero&quot;, &quot;Marzo&quot;, &quot;Abril&quot;, &quot;Mayo&quot;, &quot;Junio&quot;,
                         &quot;Julio&quot;, &quot;Agosto&quot;, &quot;Septiembre&quot;, &quot;Octubre&quot;, &quot;Noviembre&quot;, &quot;Diciembre&quot;),
                names_to = &quot;Month&quot;, values_to = &quot;Cases&quot;)
+
+# Drop unnecessary columns and group by crime type
+data &lt;- data %&gt;%
+  select(-`Bien jurídico afectado`, -`Clave_Ent`, -`Modalidad`) %&gt;%
+  group_by(Año, Month, Entidad, `Tipo de delito`) %&gt;%
+  summarise(Cases = sum(Cases, na.rm = TRUE), .groups = &quot;drop&quot;)
+
+# Display the first few rows to verify
 head(data)</code></pre>
-<pre><code>## # A tibble: 6 × 9
-##     Año Clave_Ent Entidad        `Bien jurídico afectado`       `Tipo de delito`
-##   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;                          &lt;chr&gt;           
-## 1  2015         1 Aguascalientes La vida y la Integridad corpo… Homicidio       
-## 2  2015         1 Aguascalientes La vida y la Integridad corpo… Homicidio       
-## 3  2015         1 Aguascalientes La vida y la Integridad corpo… Homicidio       
-## 4  2015         1 Aguascalientes La vida y la Integridad corpo… Homicidio       
-## 5  2015         1 Aguascalientes La vida y la Integridad corpo… Homicidio       
-## 6  2015         1 Aguascalientes La vida y la Integridad corpo… Homicidio       
-## # ℹ 4 more variables: `Subtipo de delito` &lt;chr&gt;, Modalidad &lt;chr&gt;, Month &lt;chr&gt;,
-## #   Cases &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##     Año Month Entidad        `Tipo de delito`       Cases
+##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt;                  &lt;dbl&gt;
+## 1  2015 Abril Aguascalientes Aborto                     0
+## 2  2015 Abril Aguascalientes Abuso de confianza        22
+## 3  2015 Abril Aguascalientes Abuso sexual               2
+## 4  2015 Abril Aguascalientes Acoso sexual               0
+## 5  2015 Abril Aguascalientes Allanamiento de morada    16
+## 6  2015 Abril Aguascalientes Amenazas                 123</code></pre>
 </div>
 </div>
 
